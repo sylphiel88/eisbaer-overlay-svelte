@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId Int @id @default(autoincrement())
+  username String
+  pin String @unique
+  refreshtoken String? @unique
+  DJ DJ?
+  djId Int? @unique
+}
+
+model DJ {
+  djId Int @id @default(autoincrement())
+  name String
+  gender Boolean @default(false)
+  User User? @relation(fields: [userId], references: [userId])
+  userId Int? @unique
+  EventTypes EventType[]
+}
+
+model EventType {
+  eventTypeId Int @id @default(autoincrement())
+  name String
+  catchphrase String
+  DJs DJ[]
+  Events Event[]
+}
+
+model Event {
+  eventId Int @id @default(autoincrement())
+  EventType EventType @relation(fields: [eventTypeId], references: [eventTypeId])
+  eventTypeId Int
+  owName String?
+  owCatchPhrase String?
+  date DateTime
+  Songs SongOnEvent[]
+}
+
+model Artist {
+  artistId Int @id @default(autoincrement())
+  name String
+  Albums Album[]
+}
+
+model Album {
+  albumId Int @id @default(autoincrement())
+  Artist Artist @relation(fields: [artistId], references: [artistId])
+  artistId Int
+  name String
+  Songs Song[]
+  year Int?
+  cover String?
+}
+
+model Song {
+  songId Int @id @default(autoincrement())
+  name String
+  Album Album @relation(fields: [albumId], references: [albumId])
+  albumId Int
+  Events SongOnEvent[]
+}
+
+model SongOnEvent {
+  eventId Int
+  songId Int
+  Event Event @relation(fields: [eventId], references: [eventId])
+  Song Song @relation(fields: [songId], references: [songId])
+  time DateTime
+  @@id([eventId, songId])
+}
