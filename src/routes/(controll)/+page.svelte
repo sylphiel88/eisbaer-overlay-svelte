@@ -64,12 +64,14 @@
 			}
 		}
 	}
+
+	
 	.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
+  		position: relative;
+	    display: inline-block;
+  		width: 60px;
+  		height: 34px;
+	}
 
 /* Hide default HTML checkbox */
 .switch input {

@@ -44,4 +44,4 @@
 	});
 </script>
 
-<p><ViewScreen view={views[currView]} /></p>
+<ViewScreen view={views[currView]} />
