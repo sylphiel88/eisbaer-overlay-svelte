@@ -12,11 +12,21 @@ datasource db {
 
 model User {
   userId Int @id @default(autoincrement())
-  username String
+  username String @unique
   pin String @unique
+  isPermited Boolean @default(false)
   refreshtoken String? @unique
   DJ DJ?
   djId Int? @unique
+  Role Roles @relation(fields: [roleId], references: [roleId])
+  roleId Int @default(2)
+  userAuthToken String? @unique
+}
+
+model Roles {
+  roleId   Int    @id @default(autoincrement())
+  name String @unique
+  User User[]
 }
 
 model DJ {
@@ -77,4 +87,22 @@ model SongOnEvent {
   Song Song @relation(fields: [songId], references: [songId])
   time DateTime
   @@id([eventId, songId])
+}
+
+model View {
+  viewId Int @id @default(autoincrement())
+  name String
+  type ViewType
+  component String?
+  filename String?
+  url String?
+  allowOnlyAdmin Boolean? @default(false)
+  allowForEveryOne Boolean? @default(false)
+}
+
+enum ViewType {
+  VIDEO
+  YOUTUBE
+  COMPONENT
+  IMAGE
 }

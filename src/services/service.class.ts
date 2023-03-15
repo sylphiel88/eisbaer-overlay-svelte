@@ -1,19 +1,18 @@
-import { Prisma, type Album, type Artist, type User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import DBClient from "../db/prismaClient";
-import type { GenericModel, ModelName, Models, ModelTypes } from "../types/types";
+import type { GenericModel, Models, ModelTypes } from "../types/types";
 
-export default class Service<T extends ModelTypes> {
-
+export default class Service<T> {
 
     private static prisma = DBClient.getInstance().prisma
     
-    #model: GenericModel
+    #model: GenericModel & T
     #idName: String|undefined
 
     #getModel<SpecificModelName extends Models>(
         modelName: SpecificModelName,
-    ): GenericModel {
-        return Service.prisma[modelName] as GenericModel;
+    ): GenericModel & T {
+        return Service.prisma[modelName] as GenericModel & T;
     }
 
     constructor (modelName: Models){
@@ -26,30 +25,57 @@ export default class Service<T extends ModelTypes> {
         })?.fields.find(field=>field.isId)?.name
     }
 
-    public create({...args}:T) {
+    public async create({...args}:T):Promise<T[]> {
         //@ts-ignore
-        this.#model.create({data:{
+        await this.#model.create({data:{
             ...args
         }})
+        return this.readAll()
     }
 
-    public readAll() {
-        return this.#model.findMany({})    
+    public async readAll():Promise<T[]> {
+        let result = this.#model.findMany({}) as Promise<T[]>
+        return result
     }
 
-    public readOne(id: number) {
+    public async readOne(id: number):Promise<T> {
         let currWhere:{[key:string]: number} = {}
         currWhere[`${this.#idName}`] = id
-        return this.#model.findUnique({
+        let result = this.#model.findUnique({
+            where: currWhere
+        }) as unknown as Promise<T>
+        return result
+    }
+
+    public async readBySkipAndTake(skip: number, take:number):Promise<any>{
+        let result = this.#model.findMany({
+            skip: skip,
+            take: take,
+            include: {
+                Role: true
+            }
+        })
+        return result
+    }
+    
+    public async update({...arg}){
+        let idn = this.#idName as string
+        let id = arg[idn]
+        let currWhere:{[key:string]: number} = {}
+        currWhere[`${this.#idName}`] = id
+        await this.#model.update({
+            where: currWhere,
+            data: {...arg}
+        })
+        return this.readAll()
+    }
+    
+    public async deleteOne(id: number){
+        let currWhere:{[key:string]: number} = {}
+        currWhere[`${this.#idName}`] = id
+        await this.#model.delete({
             where: currWhere
         })
-    }
-    
-    public update({...args}:T){
-
-    }
-    
-    public deleteOne(id: number){
-
+        return this.readAll()
     }
 }

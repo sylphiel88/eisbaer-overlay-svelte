@@ -1,15 +1,13 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vitest/config';
+import dynamicImport from 'vite-plugin-dynamic-import'
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [sveltekit()],
-	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
-	},
+	plugins: [sveltekit(), dynamicImport()],
 	server: {
 		port: 3000,
 		watch: {
 			usePolling: true
 		}
-	}
+	},
 });
