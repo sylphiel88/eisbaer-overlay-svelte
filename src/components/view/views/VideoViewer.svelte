@@ -1,4 +1,5 @@
 <script lang="ts">
     export let filename:string
 </script>
-<video src={`http://localhost:3000/${filename}`}><track kind="captions"></video>
+<!-- svelte-ignore a11y-media-has-caption -->
+<video src={`http://localhost:3000/${filename}`} controls ><track kind="captions"></video>

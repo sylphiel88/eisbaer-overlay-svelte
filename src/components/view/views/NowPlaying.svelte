@@ -80,7 +80,7 @@
 		<div id="now-playing-trackbar">
 			<div id="now-playing-progress-bar">
 				<div id="now-playing-progress" style={`width: ${(progress_ms / totaltime) * 100}%`}>
-					<div id="now-playing-time-text" class={`${progress_ms / totaltime < 0.08 ? 'left' : 'right'}`}>
+					<div id="now-playing-time-text" class={`${progress_ms / totaltime < 0.17 ? 'left' : 'right'}`}>
 						{calcMinutesAndSeconds(progress_ms)} / {calcMinutesAndSeconds(totaltime)}
 					</div>
 				</div>
@@ -93,8 +93,8 @@
 	#now-playing-screen {
 		// hier kompletter screen
 		display: grid;
-		grid-template-columns: calc(100dvw - 50dvh) 50dvh;
-		grid-template-rows: 50dvh 10dvh 40dvh;
+		grid-template-columns: calc(100dvw - 60dvh) 60dvh;
+		grid-template-rows: 60dvh 5dvh 25dvh;
 		width: 100dvw;
 		height: 100dvh;
 		font-family: 'Bahnschrift';
@@ -104,7 +104,7 @@
 			align-items: flex-end;
 			& > img {
 				width: auto;
-				height: 90%;
+				height: 70%;
 			}
 		}
 		& > #now-playing-album {
@@ -137,7 +137,7 @@
 			grid-column-end: 3;
 
 			display: grid;
-			grid-template-rows: 5dvh repeat(3, 9dvh) 5dvh;
+			grid-template-rows: 1.5dvh repeat(2, 5.66dvh) 3dvh 1.5dvh;
 			row-gap: 1dvh;
 			grid-template-columns: 20dvh repeat(1, calc(100dvw - 20dvh));
 		}
@@ -147,33 +147,34 @@
 			grid-row-start: 2;
 			grid-row-end: 3;
 			align-self: flex-end;
-			font-size: 35pt;
+			font-size: 45pt;
+            color: red;
 		}
 		& #now-playing-title {
 			grid-column-start: 2;
 			grid-column-end: 3;
 			grid-row-start: 3;
 			grid-row-end: 4;
-			font-size: 60pt;
+			font-size: 70pt;
 		}
 		& #now-playing-trackbar {
 			grid-column-start: 1;
 			grid-column-end: 3;
-			grid-row-start: 4;
+			grid-row-start: 5;
 			grid-row-end: 6;
 		}
 		& #now-playing-progress-bar {
 			margin-top: 2rem;
 			position: relative;
-			height: 3rem;
+			height: 5rem;
 		}
 		& #now-playing-progress {
 			position: absolute;
 			background-color: #ff2600;
-			height: 3rem;
-			border-bottom-right-radius: 1.5rem;
-			border-top-right-radius: 1.5rem;
-			box-shadow: -1px 1px 15px 0 #ff2600;
+			height: 5rem;
+			border-bottom-right-radius: 2.5rem;
+			border-top-right-radius: 2.5rem;
+			box-shadow: -1px 1px 22px 5px #ff2600;
 			transition: width 1s ease-in;
 		}
 	}
@@ -182,13 +183,13 @@
 		top: 50%;
 		transform: translateY(-50%);
 		color: white;
-		font-size: 20pt;
-		min-width: 8rem;
+		font-size: 40pt;
 		&.right {
-			right: 1rem;
+			right: 7%;
 		}
 		&.left {
-			left: 1rem;
+            width: 20rem;
+			left: 17%;
 		}
 	}
 </style>
