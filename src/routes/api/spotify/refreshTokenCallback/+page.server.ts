@@ -1,7 +1,7 @@
-import{ redirect, type RequestEvent, type RequestHandler } from "@sveltejs/kit"
+import{ redirect } from "@sveltejs/kit"
 import querystring from "querystring"
 import type { PageServerLoad } from "./$types";
-import DBClient from "../../../../../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/db/prismaClient";
+import DBClient from "../../../../db/prismaClient";
 import CurrViewStore from "../../../../Store";
 import { get } from 'svelte/store'
 

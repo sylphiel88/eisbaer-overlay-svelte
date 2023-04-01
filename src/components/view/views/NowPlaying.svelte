@@ -2,7 +2,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import SpotifyAccess from '../../../classes/SpotifyAccess';
 	import type {SpotifyTrack } from '../../../types/types';
-	import Spotify from '../../controll/ViewOptions/Spotify.svelte';
 
 	let SpotifyInstance: SpotifyAccess = SpotifyAccess.getInstance();
 
@@ -78,10 +77,10 @@
 		</div>
 		<div id="now-playing-trackbar">
 			<div id="now-playing-progress-bar">
-				<div id="now-playing-progress" style={`width: ${(progress_ms / totaltime) * 100}%`}>
+				<div id="now-playing-progress" style={`width: ${(progress_ms / totaltime) * 97}%`}>
 					<div
 						id="now-playing-time-text"
-						class={`${progress_ms / totaltime < 0.17 ? 'left' : 'right'}`}
+						class={`${progress_ms / totaltime < 0.25 ? 'left' : 'right'}`}
 					>
 						{calcMinutesAndSeconds(progress_ms)} / {calcMinutesAndSeconds(totaltime)}
 					</div>
@@ -95,7 +94,7 @@
 	#now-playing-screen {
 		// hier kompletter screen
 		display: grid;
-		grid-template-columns: calc(100dvw - 60dvh) 60dvh;
+		grid-template-columns: calc(100dvw - 50dvh) 50dvh;
 		grid-template-rows: 60dvh 5dvh 35dvh;
 		width: 100dvw;
 		height: 100dvh;
@@ -106,7 +105,7 @@
 			align-items: flex-end;
 			& > img {
 				width: auto;
-				height: 70%;
+				height: 65%;
 			}
 		}
 		& > #now-playing-album {
@@ -115,15 +114,15 @@
 			align-items: flex-end;
 			position: relative;
 			& > img {
-				border: 5px inset rgb(100, 100, 100);
+				border: 10px inset rgb(150, 150, 150);
 				width: 90%;
-				height: 90%;
+				aspect-ratio: 1/1;
 			}
 			& > p {
 				position: absolute;
 				width: 90%;
 				padding: 1%;
-				font-size: 45pt;
+				font-size: 35pt;
 				background-color: rgba(grey, 0.5);
 				text-align: center;
 			}
@@ -173,10 +172,13 @@
 			grid-row-end: 6;
 		}
 		& #now-playing-progress-bar {
-			margin-top: -1rem;
+			margin-top: 1rem;
 			position: relative;
 			height: 5rem;
-			width: 100%;
+			width: 97dvw;
+			background-color: darken(#ff2600, 40%);
+			box-shadow: -1px 1px 30px 0px darken(#ff2600, 15%);
+			border-radius: 20rem;
 		}
 		& #now-playing-progress {
 			position: absolute;
