@@ -1,8 +1,8 @@
 import type { RequestHandler } from "@sveltejs/kit";
 import querystring from 'querystring'
-import DBClient from "../../../../../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/db/prismaClient";
+import DBClient from "../../../../db/prismaClient";
 import { get } from 'svelte/store'
-import CurrViewStore from "../../../../../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/Store";
+import CurrViewStore from "../../../../Store";
 
 export const GET:RequestHandler = async() => {
     let foundUser = await DBClient.getInstance().prisma.user.findUnique({

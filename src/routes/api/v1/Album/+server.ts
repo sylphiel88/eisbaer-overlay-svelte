@@ -1,6 +1,6 @@
 import type { Album } from '@prisma/client';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
-import Service from '../../../../services/service.class';
+import Service from '../../../../services/Service.class';
 
 /** @type {import('./$types').RequestHandler} */
 export const GET = async ({ url }: RequestEvent) => {

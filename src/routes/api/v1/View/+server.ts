@@ -1,6 +1,6 @@
 import type { View } from '@prisma/client';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
-import Service from '../../../../services/service.class';
+import Service from '../../../../services/Service.class';
 
 const viewService = new Service<View>('view')
 

@@ -29,5 +29,5 @@
 
 </script>
 {#await Component then {default: Component}}
-<Component filename={option}/>
+    <svelte:component this={Component} filename={option}/>
 {/await}

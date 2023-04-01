@@ -1,17 +1,18 @@
 import type { View } from '@prisma/client';
 import { uRoles } from '../../types/types';
-import Service from '../../services/service.class';
+import Service from '../../services/Service.class';
 import type { LayoutServerLoad } from './$types';
 import { env } from 'process';
 import DBClient from '../../db/prismaClient';
+import ViewService from '../../services/ViewService.class';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
     let client_id:string = ""
-    let ViewService = new Service<View>('view')
+    let viewService = new ViewService()
     let user
     let views:View[] = []
     let hasRefreshToken = false
-    views = await ViewService.readAll()
+    views = await viewService.readAll()
     if(locals.user){
         user = locals.user
         if(locals.user.role !== uRoles.ADMIN){

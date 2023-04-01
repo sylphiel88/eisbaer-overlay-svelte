@@ -1,10 +1,10 @@
 import type { Artist } from '@prisma/client';
 import type { RequestEvent } from '@sveltejs/kit';
-import Service from '../../../../services/service.class';
+import ArtistService from '../../../../services/ArtistService.class';
 
 /** @type {import('./$types').RequestHandler} */
 export const GET = async({url}:RequestEvent) => {
-    const artistService = new Service<Artist>('artist')
+    const artistService = new ArtistService()
     const id = url.searchParams.get('id')
     let results: any|any[]|null
     if(id !== null){

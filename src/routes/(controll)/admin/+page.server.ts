@@ -1,6 +1,6 @@
 import type { Roles, User, View } from "@prisma/client"
 import { redirect } from "@sveltejs/kit"
-import Service from "../../../services/service.class"
+import Service from "../../../services/Service.class"
 import { uRoles, type adminServerProps } from "../../../types/types"
 import type { PageServerLoad } from "./$types"
 

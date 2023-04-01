@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import BackNav from '../../components/login_register/BackNav.svelte';
 	import UserNav from '../../components/controll/UserNav.svelte';
+	import '../../styles/style.scss'
     let user = $page.data.user
 </script>
 
@@ -20,6 +21,9 @@
 </div>
 
 <style lang="scss">
+	:global(*){
+			box-sizing: border-box;
+	}
 	:global(body) {
 		background-color: #4e0c00;
 		margin: 0;
@@ -29,7 +33,6 @@
 		height: 100dvh;
 		color: white;
 		overflow: hidden;
-		box-sizing: border-box;
 	}
 	:global(button){
 			all: unset;

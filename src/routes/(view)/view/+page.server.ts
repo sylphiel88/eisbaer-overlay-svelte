@@ -1,15 +1,15 @@
 import type { View } from '@prisma/client';
 import { uRoles } from '../../../types/types';
-import Service from '../../../services/service.class';
 import type { PageServerLoad } from './$types';
 import DBClient from '../../../db/prismaClient';
+import ViewService from '../../../services/ViewService.class';
 
 export const load: PageServerLoad = async ({ locals }) => {
-    let ViewService = new Service<View>('view')
+    let viewService = new ViewService()
     let user
     let views:View[] = []
     let hasRefreshToken = false
-    views = await ViewService.readAll()
+    views = await viewService.readAll()
     if(locals.user){
         user = locals.user
         let foundUser = await DBClient.getInstance().prisma.user.findUnique({

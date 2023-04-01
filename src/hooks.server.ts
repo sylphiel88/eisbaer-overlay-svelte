@@ -1,6 +1,6 @@
 import type { Handle } from '@sveltejs/kit'
-import CurrViewStore from '../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/Store'
-import type { uRoles } from '../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/types/types'
+import CurrViewStore from '../src/Store'
+import type { uRoles } from '../src/types/types'
 import DBClient from './db/prismaClient'
 
 const db = DBClient.getInstance().prisma
@@ -24,6 +24,5 @@ export const handle: Handle = async ({ event, resolve }) => {
       role: user.Role.name as uRoles,
     }
   }
-
   return await resolve(event)
 }

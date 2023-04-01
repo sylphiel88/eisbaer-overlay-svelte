@@ -10,6 +10,8 @@
 	let user: string | undefined = '';
 	let views: View[] = [];
 
+	let useSpotify: boolean = false
+
 	$: views = $page.data.views;
 	$: user = $page.data.user;
 
@@ -18,6 +20,10 @@
 			let storedCurrView = localStorage.getItem('currView');
 			if (user && storedCurrView) currView = Number(storedCurrView);
 			window.addEventListener('storage', () => {
+				let storedUseSpotify = localStorage.getItem('useSpotify')
+				if(storedUseSpotify !== null){
+					useSpotify =  storedUseSpotify === "true"
+				}
 				let storedCurrView = localStorage.getItem('currView');
 				if (user) {
 					currView =
@@ -39,9 +45,10 @@
 						currView = 0
 					}
 				}
+				
 			});
 		}
 	});
 </script>
 
-<ViewScreen view={views[currView]} />
+<ViewScreen view={views[currView]}/>

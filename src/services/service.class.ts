@@ -15,7 +15,7 @@ export default class Service<T> {
         return Service.prisma[modelName] as GenericModel & T;
     }
 
-    constructor (modelName: Models){
+    protected constructor (modelName: Models){
         this.#model = this.#getModel(modelName)
         this.#idName = Prisma.dmmf.datamodel.models.find(model=>{
             let firstLetter = (modelName as string)[0]

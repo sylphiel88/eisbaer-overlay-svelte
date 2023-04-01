@@ -1,8 +1,8 @@
 import type { User } from '@prisma/client';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
-import Service from '../../../../services/service.class';
+import UserService from '../../../../../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/services/UserService.class';
 
-const userService = new Service<User>('user')
+const userService = new UserService()
 
 export const GET:RequestHandler = async({url}:RequestEvent) => {
     const id = url.searchParams.get('id')
