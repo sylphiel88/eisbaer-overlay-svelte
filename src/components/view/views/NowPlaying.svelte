@@ -80,7 +80,7 @@
 				<div id="now-playing-progress" style={`width: ${(progress_ms / totaltime) * 97}%`}>
 					<div
 						id="now-playing-time-text"
-						class={`${progress_ms / totaltime < 0.25 ? 'left' : 'right'}`}
+						class={`${progress_ms / totaltime < 0.3 ? 'left' : 'right'}`}
 					>
 						{calcMinutesAndSeconds(progress_ms)} / {calcMinutesAndSeconds(totaltime)}
 					</div>
@@ -147,7 +147,7 @@
 			grid-row-start: 2;
 			grid-row-end: 3;
 			align-self: flex-end;
-			font-size: 45pt;
+			font-size: 40pt;
 			color: red;
 			overflow: hidden;
 			width: 97%;
@@ -159,7 +159,7 @@
 			grid-column-end: 3;
 			grid-row-start: 3;
 			grid-row-end: 4;
-			font-size: 70pt;
+			font-size: 55pt;
 			width: 97%;
 			overflow: hidden;
 			white-space: nowrap;
