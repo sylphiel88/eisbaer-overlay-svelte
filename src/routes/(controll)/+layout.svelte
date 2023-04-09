@@ -92,16 +92,6 @@
 		border-radius: 10px;
 		box-shadow: 1px -1px 22px 0 rgba(#da2b0d, 0.5);
 		backdrop-filter: blur(5px);
-		animation: mainPageZoom 2s forwards 1 ease-out;
-	}
-	
-	@keyframes mainPageZoom {
-		0%{
-			transform: scale(0);
-		}
-		100% {
-			transform: scale(1);
-		}
 	}
 
     #main-page{

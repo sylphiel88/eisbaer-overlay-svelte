@@ -94,7 +94,7 @@
 	#now-playing-screen {
 		// hier kompletter screen
 		display: grid;
-		grid-template-columns: calc(100dvw - 50dvh) 50dvh;
+		grid-template-columns: calc(100dvw - 40dvh) 40dvh;
 		grid-template-rows: 60dvh 5dvh 35dvh;
 		width: 100dvw;
 		height: 100dvh;

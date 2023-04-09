@@ -11,3 +11,4 @@ vite.config.ts.timestamp-*
 *.mp4
 docker-compose.dev.yml
 Dockerfile.dev
+static/eisbaer.ico
