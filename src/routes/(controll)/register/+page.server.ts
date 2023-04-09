@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit'
-import bcrypt from 'bcrypt'
+import { default as bcrypt } from 'bcrypt'
 import { uRoles } from '../../../types/types'
 import DBClient from '../../../db/prismaClient'
 import type { Action, Actions, PageServerLoad } from './$types'
@@ -32,12 +32,14 @@ const register: Action = async ({ request }) => {
     return fail(400, { user: true })
   }
 
+  const pinHash = await bcrypt.hash(pin, 10)
+  const userAuthToken = crypto.randomUUID()
 
   await db.user.create({
     data: {
       username,
-      pin: await bcrypt.hash(pin, 10),
-      userAuthToken: crypto.randomUUID(),
+      pin: pinHash,
+      userAuthToken: userAuthToken,
       Role: { connect: { name: uRoles.USER } },
     },
   })

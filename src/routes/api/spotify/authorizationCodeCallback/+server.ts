@@ -1,6 +1,6 @@
 import { redirect, type RequestEvent, type RequestHandler } from "@sveltejs/kit";
 import querystring from 'querystring'
-import CurrViewStore from "../../../../../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/Store";
+import CurrViewStore from "../../../../../src/Store";
 
 export const GET:RequestHandler = async() => {
 const CLIENT_ID = process.env.CLIENT_ID;

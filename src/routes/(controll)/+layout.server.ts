@@ -24,7 +24,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
             }
         })
         hasRefreshToken = foundUser?.refreshtoken !== null
-        client_id = env["Client_ID"] as string
+        client_id = env["CLIENT_ID"] as string
     } else {
         views = views.filter(view=>view.allowForEveryOne)
     }

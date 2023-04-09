@@ -1,6 +1,6 @@
 import type { User } from '@prisma/client';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
-import UserService from '../../../../../../../../../Users/queue/eisbaer-overlay-svelte/eisbaer-overlay-svelte/src/services/UserService.class';
+import UserService from '../../../../../src/services/UserService.class';
 
 const userService = new UserService()
 
