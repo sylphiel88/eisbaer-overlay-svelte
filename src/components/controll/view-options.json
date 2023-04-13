@@ -6,7 +6,9 @@
             ]
         },
         {
-            "options":["Spotify", "YoutubeEditor"]
-        }
+            "options":["Spotify", "YoutubeEditor","SlotMachineTools"]
+        },
+        {"options":[]},
+        {"options":["SlotMachineTools"]}
     ]
 }
