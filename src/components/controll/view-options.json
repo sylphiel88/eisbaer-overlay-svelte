@@ -9,6 +9,6 @@
             "options":["Spotify", "YoutubeEditor","SlotMachineTools"]
         },
         {"options":[]},
-        {"options":["SlotMachineTools"]}
+        {"options":["Spotify","SlotMachineTools"]}
     ]
 }
