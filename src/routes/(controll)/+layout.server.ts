@@ -1,5 +1,5 @@
 import type { View } from '@prisma/client';
-import { uRoles } from '../../types/types';
+import { uRoles, type UserCredentials } from '../../types/types';
 import Service from '../../services/Service.class';
 import type { LayoutServerLoad } from './$types';
 import { env } from 'process';
@@ -9,7 +9,7 @@ import ViewService from '../../services/ViewService.class';
 export const load: LayoutServerLoad = async ({ locals }) => {
     let client_id:string = ""
     let viewService = new ViewService()
-    let user
+    let user:UserCredentials
     let views:View[] = []
     let hasRefreshToken = false
     views = await viewService.readAll()
@@ -26,6 +26,10 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         hasRefreshToken = foundUser?.refreshtoken !== null
         client_id = env["CLIENT_ID"] as string
     } else {
+        user = {
+            name:"",
+            role:uRoles.ALL
+        }
         views = views.filter(view=>view.allowForEveryOne)
     }
     views = views.sort((a, b) => a.viewId - b.viewId)

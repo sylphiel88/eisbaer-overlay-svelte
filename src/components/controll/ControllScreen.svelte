@@ -4,14 +4,18 @@
 	import ViewSelector from './ViewSelector.svelte';
 	import querystring from 'querystring';
 	import { page } from '$app/stores';
-	import * as options from './view-options.json';
 	import ViewOption from './ViewOption.svelte';
+	import options from "./ViewOptions/viewoptions.json"
+	import VirtualDj from './ViewOptions/VirtualDJ.svelte';
+	import ControllBoard from './ControllBoard.svelte';
+	import type { SvelteComponent } from 'svelte';
 
 	export let views: View[];
 	let currView = 0;
 	let useSpotify: boolean = false;
+	let useVirtualDJ: boolean = false;
 
-	let Components: Promise<any>[];
+	let Components: Promise<SvelteComponent>[];
 
 	const SCOPE = 'user-read-currently-playing';
 	const REDIRECT_URI = 'http://localhost:3000/api/spotify/authorizationCodeCallback';
@@ -28,24 +32,33 @@
 		}
 	}
 
+	$: {
+		if (browser) {
+			localStorage.setItem('useVirtualDJ', `${useVirtualDJ}`);
+		}
+	}
+
 	const setView = (newView: number) => {
 		currView = newView;
 	};
 
 	const toggleUseSpotify = () => {
 		useSpotify = !useSpotify;
+		console.log(useSpotify, useVirtualDJ)
+		if(useVirtualDJ && useSpotify){
+			useVirtualDJ = false
+		}
 	};
 
-	$: {
-		Components = []
-		if (options.viewOptions && currView) {
-			if (options.viewOptions.length > currView && options.viewOptions[currView].options) {
-				Components = options.viewOptions[currView].options.map((fn) => {
-					return import(`./ViewOptions/${fn}.svelte`);
-				});
-			}
+	const toggleUseVirtualDJ= () => {
+		useVirtualDJ = !useVirtualDJ;
+		console.log(useSpotify, useVirtualDJ)
+		if(useVirtualDJ && useSpotify){
+			useSpotify = false
 		}
-	}
+	};
+
+	Components = options.map(file=>import(`./ViewOptions/${file}.svelte`))
 </script>
 
 <div id="controll-screen-wrapper">
@@ -66,20 +79,7 @@
 			</a>
 		{/if}
 	</div>
-	<div id="controll-board">
-		{#if Components}
-			{#each Components as Component, index}
-				<ViewOption {index} title={options.viewOptions[currView].options[index]}>
-					{#await Component then { default: Component }}
-						<svelte:component
-							this={Component}
-							{...{ toggle: toggleUseSpotify, state: useSpotify }}
-						/>
-					{/await}
-				</ViewOption>
-			{/each}
-		{/if}
-	</div>
+	<ControllBoard Components={Components} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ}  useSpotify={useSpotify} useVirtualDJ={useVirtualDJ}/>
 </div>
 
 <style lang="scss">
@@ -88,11 +88,5 @@
 		height: -webkit-fill-available;
 		display: flex;
 		flex-direction: column;
-	}
-	#controll-board {
-		padding: 2rem;
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 5rem;
 	}
 </style>

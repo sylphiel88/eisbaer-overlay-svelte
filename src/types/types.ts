@@ -25,7 +25,8 @@ export type UserCredentials = {
 export enum uRoles {
     ADMIN = 'admin',
     USER = 'user',
-    DJ = 'dj'
+    DJ = 'dj',
+    ALL = 'all'
 }
 
 export interface adminServerProps {
@@ -135,3 +136,17 @@ export interface ExternalIDS {
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
+
+export type VirtualDJSong = {
+    active: string,
+    artist: string,
+    title: string,
+    cover?: string
+    currPos?: number,
+    duration?: number,
+    album?:string
+}
+
+export type VirtualDJ = {
+    [key:string]: VirtualDJSong
+}

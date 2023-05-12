@@ -72,6 +72,10 @@ export default class SpotifyAccess {
 				}
 			}, 1000);
 		} else {
+			if(this.#interval !== null){
+				clearInterval(this.#interval)
+				this.#interval = null
+			}
 			this.#count = 0;
 			this.currentSong = {
 				is_playing: true,

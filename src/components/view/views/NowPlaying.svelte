@@ -1,15 +1,25 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import SpotifyAccess from '../../../classes/SpotifyAccess';
-	import type {SpotifyTrack } from '../../../types/types';
+	import type {SpotifyTrack, VirtualDJ } from '../../../types/types';
+	import VirtualDJAccess from '../../../classes/VirtualDjAccess';
 
 	let SpotifyInstance: SpotifyAccess = SpotifyAccess.getInstance();
+	let VirtualDJInstance:VirtualDJAccess = VirtualDJAccess.getInstance();
+	SpotifyInstance.useSpotify = false
+	VirtualDJInstance.useVirtualDJ = false
 
 	let totaltime: number = 0;
 	let progress_ms: number = 0;
 	let currentSong:SpotifyTrack|undefined
 
 	let useSpotify: boolean = false;
+
+	let useVirtualDJ: boolean = false;
+
+	let interval:NodeJS.Timer|null = null
+
+	
 
 	const calcMinutesAndSeconds = (timeInMs: number) => {
 		let minutes = Math.floor(timeInMs / 1000 / 60);
@@ -33,20 +43,33 @@
 				useSpotify = storedUseSpotify === 'true';
 			}
 		});
+		let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
+		if (storedUseVirtualDJ !== null) useVirtualDJ = storedUseVirtualDJ === 'true';
+		window.addEventListener('storage', () => {
+			let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
+			if (storedUseVirtualDJ !== null) {
+				useSpotify = storedUseVirtualDJ === 'true';
+			}
+		});
 		document.addEventListener('settitle', (e:CustomEvent)=>{
-			progress_ms = SpotifyInstance.progress_ms;
-			totaltime = SpotifyInstance.duration_ms;
-			currentSong = SpotifyInstance.currentSong
+			progress_ms = useSpotify ? SpotifyInstance.progress_ms : (useVirtualDJ ? VirtualDJInstance.progress_ms : 0);
+			totaltime = useSpotify ? SpotifyInstance.duration_ms: (useVirtualDJ ? VirtualDJInstance.duration_ms : 0);
+			currentSong = useSpotify ? SpotifyInstance.currentSong : (useVirtualDJ ? VirtualDJInstance.currentSong! as SpotifyTrack : undefined)
 		})
 		document.addEventListener('setprogress', (e:CustomEvent)=>{
-			progress_ms = SpotifyInstance.progress_ms;
+			progress_ms = useSpotify ? SpotifyInstance.progress_ms : (useVirtualDJ ? VirtualDJInstance.progress_ms : 0);
 		})
 	});
 
+	$: console.log(VirtualDJInstance.progress_ms, VirtualDJInstance.duration_ms)
+
 	$: SpotifyInstance.useSpotify = useSpotify
+
+	$: VirtualDJInstance.useVirtualDJ = useVirtualDJ
 
 	onDestroy(()=>{
 		SpotifyInstance.interval = null
+		VirtualDJInstance.interval = null
 	})
 
 </script>
