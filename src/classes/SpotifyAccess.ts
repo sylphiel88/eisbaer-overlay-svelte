@@ -138,4 +138,9 @@ export default class SpotifyAccess {
 		}
 		return SpotifyAccess.instance;
 	}
+
+	public resetSong(){
+		this.#interval = null
+		this.#currentSong = undefined;
+	}
 }

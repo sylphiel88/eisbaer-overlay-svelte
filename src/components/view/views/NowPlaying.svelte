@@ -13,13 +13,15 @@
 	let progress_ms: number = 0;
 	let currentSong:SpotifyTrack|undefined
 
-	let useSpotify: boolean = false;
+	export let useSpotify: boolean;
 
-	let useVirtualDJ: boolean = false;
+	export let useVirtualDJ: boolean;
+
+	export let useOldVsNew: boolean;
 
 	let interval:NodeJS.Timer|null = null
 
-	
+	$: console.log(useOldVsNew)
 
 	const calcMinutesAndSeconds = (timeInMs: number) => {
 		let minutes = Math.floor(timeInMs / 1000 / 60);
@@ -37,20 +39,8 @@
 	onMount(async () => {
 		let storedUseSpotify = localStorage.getItem('useSpotify');
 		if (storedUseSpotify !== null) useSpotify = storedUseSpotify === 'true';
-		window.addEventListener('storage', () => {
-			let storedUseSpotify = localStorage.getItem('useSpotify');
-			if (storedUseSpotify !== null) {
-				useSpotify = storedUseSpotify === 'true';
-			}
-		});
 		let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
 		if (storedUseVirtualDJ !== null) useVirtualDJ = storedUseVirtualDJ === 'true';
-		window.addEventListener('storage', () => {
-			let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
-			if (storedUseVirtualDJ !== null) {
-				useSpotify = storedUseVirtualDJ === 'true';
-			}
-		});
 		document.addEventListener('settitle', (e:CustomEvent)=>{
 			progress_ms = useSpotify ? SpotifyInstance.progress_ms : (useVirtualDJ ? VirtualDJInstance.progress_ms : 0);
 			totaltime = useSpotify ? SpotifyInstance.duration_ms: (useVirtualDJ ? VirtualDJInstance.duration_ms : 0);
@@ -61,7 +51,7 @@
 		})
 	});
 
-	$: console.log(VirtualDJInstance.progress_ms, VirtualDJInstance.duration_ms)
+	$: if(!useSpotify){SpotifyInstance.resetSong()}
 
 	$: SpotifyInstance.useSpotify = useSpotify
 
@@ -75,7 +65,7 @@
 </script>
 
 <div id="now-playing-screen">
-	<div id="now-playing-eisbaer-logo"><img src="/eisbaerlogo.png" alt="" /></div>
+	<div id="now-playing-eisbaer-logo"><img src={`/eisbaerlogo${useOldVsNew?'_alt':''}.png`} alt="" /></div>
 	<div id="now-playing-album">
 		<img
 			src={currentSong?.item.album.images[0].url !== undefined

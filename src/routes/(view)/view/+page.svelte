@@ -7,10 +7,12 @@
 
 	let currView: number = 0;
 
+	let useSpotify:boolean
+	let useVirtualDJ:boolean
+	let useOldVsNew:boolean
+
 	let user: string | undefined = '';
 	let views: View[] = [];
-
-	let useSpotify: boolean = false
 
 	$: views = $page.data.views;
 	$: user = $page.data.user;
@@ -20,10 +22,6 @@
 			let storedCurrView = localStorage.getItem('currView');
 			if (user && storedCurrView) currView = Number(storedCurrView);
 			window.addEventListener('storage', () => {
-				let storedUseSpotify = localStorage.getItem('useSpotify')
-				if(storedUseSpotify !== null){
-					useSpotify =  storedUseSpotify === "true"
-				}
 				let storedCurrView = localStorage.getItem('currView');
 				if (user) {
 					currView =
@@ -45,10 +43,21 @@
 						currView = 0
 					}
 				}
-				
-			});
+				let storedUseSpotify = localStorage.getItem('useSpotify');
+				if (storedUseSpotify !== null) {
+					useSpotify = storedUseSpotify === 'true';
+				}
+				let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
+				if (storedUseVirtualDJ !== null) {
+					useVirtualDJ = storedUseVirtualDJ === 'true';
+				} 
+				let storedUseOldVsNew = localStorage.getItem('useOldVsNew');
+				if (storedUseVirtualDJ !== null) {
+					useOldVsNew = storedUseOldVsNew === 'true';
+				}
+				});
 		}
 	});
 </script>
 
-<ViewScreen view={views[currView]}/>
+<ViewScreen view={views[currView]} useOldVsNew={useOldVsNew} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ}/>

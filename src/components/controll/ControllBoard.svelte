@@ -6,8 +6,10 @@
     export let Components:Promise<SvelteComponent>[]
     export let toggleUseSpotify:Function
     export let toggleUseVirtualDJ:Function
+    export let toggleUseOldVsNew:Function
     export let useSpotify:boolean
     export let useVirtualDJ:boolean
+    export let useOldVsNew:boolean
 </script>
 <div id="controll-board">
     {#if Components}
@@ -16,7 +18,7 @@
                 {#await Component then { default: Component }}
                     <svelte:component
                         this={Component}
-                        {...{ toggleS: toggleUseSpotify, stateS: useSpotify, toggleV: toggleUseVirtualDJ, stateV: useVirtualDJ }}
+                        {...{ toggleS: toggleUseSpotify, stateS: useSpotify, toggleV: toggleUseVirtualDJ, stateV: useVirtualDJ, toggleON: toggleUseOldVsNew, stateON: useOldVsNew }}
                         
                     />
                 {/await}

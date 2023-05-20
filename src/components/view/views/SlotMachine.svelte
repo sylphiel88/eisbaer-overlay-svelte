@@ -31,7 +31,6 @@
 			.map((val) => {return val + 1979})
 			.filter((curYear) => !alreadyTakenYears.includes(curYear));
         year = years.splice(Math.floor(Math.random()*years.length),1)[0]
-        console.log(year)
 		let thousand = Math.floor(year / 1000);
 		let hundred = Math.floor((year - 1000 * thousand) / 100);
 		let tens = Math.floor((year - 1000 * thousand - 100 * hundred) / 10);

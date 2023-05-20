@@ -1,7 +1,10 @@
 <script lang="ts">
 	import type { View } from "@prisma/client";
     export let view:View
-
+    export let useSpotify:boolean
+    export let useOldVsNew:boolean
+    export let useVirtualDJ:boolean
+    
     let Component: Promise<any>
 
     let option: string
@@ -29,5 +32,5 @@
 
 </script>
 {#await Component then {default: Component}}
-    <svelte:component this={Component} filename={option}/>
+    <svelte:component this={Component} filename={option} useVirtualDj={useVirtualDJ} useSpotify={useSpotify} useOldVsNew={useOldVsNew}/>
 {/await}

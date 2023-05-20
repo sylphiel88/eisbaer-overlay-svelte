@@ -14,6 +14,7 @@
 	let currView = 0;
 	let useSpotify: boolean = false;
 	let useVirtualDJ: boolean = false;
+	let useOldVsNew: boolean = false;
 
 	let Components: Promise<SvelteComponent>[];
 
@@ -26,36 +27,29 @@
 		}
 	}
 
-	$: {
-		if (browser) {
-			localStorage.setItem('useSpotify', `${useSpotify}`);
-		}
-	}
-
-	$: {
-		if (browser) {
-			localStorage.setItem('useVirtualDJ', `${useVirtualDJ}`);
-		}
-	}
-
 	const setView = (newView: number) => {
 		currView = newView;
 	};
 
 	const toggleUseSpotify = () => {
 		useSpotify = !useSpotify;
-		console.log(useSpotify, useVirtualDJ)
 		if(useVirtualDJ && useSpotify){
 			useVirtualDJ = false
 		}
+		localStorage.setItem('useSpotify', `${useSpotify}`);
 	};
 
 	const toggleUseVirtualDJ= () => {
 		useVirtualDJ = !useVirtualDJ;
-		console.log(useSpotify, useVirtualDJ)
 		if(useVirtualDJ && useSpotify){
 			useSpotify = false
 		}
+		localStorage.setItem('useVirtualDJ', `${useVirtualDJ}`);
+	};
+
+	const toggleUseOldVsNew = () => {
+		useOldVsNew = !useOldVsNew;
+		localStorage.setItem('useOldVsNew', `${useOldVsNew}`);
 	};
 
 	Components = options.map(file=>import(`./ViewOptions/${file}.svelte`))
@@ -79,7 +73,7 @@
 			</a>
 		{/if}
 	</div>
-	<ControllBoard Components={Components} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ}  useSpotify={useSpotify} useVirtualDJ={useVirtualDJ}/>
+	<ControllBoard Components={Components} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ}  useSpotify={useSpotify} useVirtualDJ={useVirtualDJ} useOldVsNew={useOldVsNew} toggleUseOldVsNew ={toggleUseOldVsNew}/>
 </div>
 
 <style lang="scss">
