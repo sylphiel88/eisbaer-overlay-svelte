@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import SpotifyAccess from '../../../classes/SpotifyAccess';
-	import type {SpotifyTrack, VirtualDJ } from '../../../types/types';
+	import type { SpotifyTrack, VirtualDJ } from '../../../types/types';
 	import VirtualDJAccess from '../../../classes/VirtualDjAccess';
 
 	let SpotifyInstance: SpotifyAccess = SpotifyAccess.getInstance();
-	let VirtualDJInstance:VirtualDJAccess = VirtualDJAccess.getInstance();
-	SpotifyInstance.useSpotify = false
-	VirtualDJInstance.useVirtualDJ = false
+	let VirtualDJInstance: VirtualDJAccess = VirtualDJAccess.getInstance();
+	SpotifyInstance.useSpotify = false;
+	VirtualDJInstance.useVirtualDJ = false;
 
 	let totaltime: number = 0;
 	let progress_ms: number = 0;
-	let currentSong:SpotifyTrack|undefined
+	let currentSong: SpotifyTrack | undefined;
 
 	export let useSpotify: boolean;
 
@@ -19,9 +19,9 @@
 
 	export let useOldVsNew: boolean;
 
-	let interval:NodeJS.Timer|null = null
+	let interval: NodeJS.Timer | null = null;
 
-	$: console.log(useOldVsNew)
+	$: console.log(useOldVsNew);
 
 	const calcMinutesAndSeconds = (timeInMs: number) => {
 		let minutes = Math.floor(timeInMs / 1000 / 60);
@@ -36,36 +36,87 @@
 		return `${minutes}:${secondsString}`;
 	};
 
+	let timeToNextHalfHour:number = 0
+
 	onMount(async () => {
 		let storedUseSpotify = localStorage.getItem('useSpotify');
 		if (storedUseSpotify !== null) useSpotify = storedUseSpotify === 'true';
 		let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
 		if (storedUseVirtualDJ !== null) useVirtualDJ = storedUseVirtualDJ === 'true';
-		document.addEventListener('settitle', (e:CustomEvent)=>{
-			progress_ms = useSpotify ? SpotifyInstance.progress_ms : (useVirtualDJ ? VirtualDJInstance.progress_ms : 0);
-			totaltime = useSpotify ? SpotifyInstance.duration_ms: (useVirtualDJ ? VirtualDJInstance.duration_ms : 0);
-			currentSong = useSpotify ? SpotifyInstance.currentSong : (useVirtualDJ ? VirtualDJInstance.currentSong! as SpotifyTrack : undefined)
-		})
-		document.addEventListener('setprogress', (e:CustomEvent)=>{
-			progress_ms = useSpotify ? SpotifyInstance.progress_ms : (useVirtualDJ ? VirtualDJInstance.progress_ms : 0);
-		})
+		document.addEventListener('settitle', (e: CustomEvent) => {
+			progress_ms = useSpotify
+				? SpotifyInstance.progress_ms
+				: useVirtualDJ
+				? VirtualDJInstance.progress_ms
+				: 0;
+			totaltime = useSpotify
+				? SpotifyInstance.duration_ms
+				: useVirtualDJ
+				? VirtualDJInstance.duration_ms
+				: 0;
+			currentSong = useSpotify
+				? SpotifyInstance.currentSong
+				: useVirtualDJ
+				? (VirtualDJInstance.currentSong! as SpotifyTrack)
+				: undefined;
+		});
+		document.addEventListener('setprogress', (e: CustomEvent) => {
+			progress_ms = useSpotify
+				? SpotifyInstance.progress_ms
+				: useVirtualDJ
+				? VirtualDJInstance.progress_ms
+				: 0;
+		});
 	});
 
-	$: if(!useSpotify){SpotifyInstance.resetSong()}
+	$: { if(useOldVsNew !== undefined){
+		if(interval){
+			clearInterval(interval)
+		}
+		interval = null
+		interval = setInterval(()=>{
+			timeToNextHalfHour = (getTimeToNextHalfHour() + 2)* 5
+		},60000)
+	}
+	}
 
-	$: SpotifyInstance.useSpotify = useSpotify
+	$: if (!useSpotify) {
+		SpotifyInstance.resetSong();
+	}
 
-	$: VirtualDJInstance.useVirtualDJ = useVirtualDJ
+	$: SpotifyInstance.useSpotify = useSpotify;
 
-	onDestroy(()=>{
-		SpotifyInstance.interval = null
-		VirtualDJInstance.interval = null
-	})
+	$: VirtualDJInstance.useVirtualDJ = useVirtualDJ;
 
+	onDestroy(() => {
+		SpotifyInstance.interval = null;
+		VirtualDJInstance.interval = null;
+		if(interval){
+			clearInterval(interval)
+		}
+		interval = null
+	});
+
+	const getTimeToNextHalfHour = () => {
+		const date = new Date();
+		const milli = date.getTime();
+		let halfHour = 1000 * 60 * 30;
+		// (gerundet(aktulle zeit / halbe stunde) + 1) * halfHour
+		let nextHalfHour = (Math.floor(milli / halfHour) + 1) * halfHour;
+		let difference = nextHalfHour - milli;
+		let minutes5 = Math.floor(Math.floor(Math.floor(difference / 1000) / 60) / 5);
+		return minutes5;
+	};
 </script>
 
 <div id="now-playing-screen">
-	<div id="now-playing-eisbaer-logo"><img src={`/eisbaerlogo${useOldVsNew?'_alt':''}.png`} alt="" /></div>
+	<div id="now-playing-eisbaer-logo">
+		<img src={`/eisbaerlogo${useOldVsNew ? '_alt' : ''}.png`} alt="" />
+		<!-- <span id="Title"
+			>{useOldVsNew
+				? `Alte Musik! Neue Musik in ca. ${timeToNextHalfHour} Minuten`
+				: `Neue Musik! Alte Musik in ca. ${timeToNextHalfHour} Minuten`}</span> -->
+	</div>
 	<div id="now-playing-album">
 		<img
 			src={currentSong?.item.album.images[0].url !== undefined
@@ -113,9 +164,16 @@
 		height: 100dvh;
 		font-family: 'Bahnschrift';
 		& > #now-playing-eisbaer-logo {
+			position: relative;
 			display: flex;
 			justify-content: center;
 			align-items: flex-end;
+			> #Title {
+				position: absolute;
+				top: 5rem;
+				left: 5rem;
+				font-size: 30pt;
+			}
 			& > img {
 				width: auto;
 				height: 65%;
