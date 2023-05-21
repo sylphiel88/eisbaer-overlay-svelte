@@ -1,8 +1,18 @@
 [
-    "SlotMachineTools",
-    "Spotify",
-    "YoutubeEditor",
-    "VirtualDJ",
-    "OldVsNew",
-    "DjPlanEditor"
+    {
+        "name": "SlotMachineTools",
+        "minRole": 2
+    },
+    {
+        "name": "Spotify",
+        "minRole": 2
+    },
+    {
+        "name": "YoutubeEditor",
+        "minRole": 3
+    },
+    {
+        "name": "VirtualDJ",
+        "minRole": 2
+    }
 ]

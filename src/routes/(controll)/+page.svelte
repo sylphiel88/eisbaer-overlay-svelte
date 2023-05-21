@@ -3,6 +3,8 @@
 	import { page } from '$app/stores';
 	import type { View } from '@prisma/client';
 	import ControllScreen from '../../components/controll/ControllScreen.svelte';
+	import { uRoles } from '../../types/types';
+	import ControllBoard from '../../components/controll/ControllBoard.svelte';
 	let user: any = $page.data.user;
 	let views: View[] = [];
 	$: views = $page.data.views;
@@ -19,10 +21,30 @@
 			}
 		}
 	}
+
+	let useSpotify:boolean = true
+
+	let useVirtualDJ:boolean = false
+
+	const toggleUseSpotify = () => {
+		useSpotify = !useSpotify;
+		console.log(useSpotify, useVirtualDJ)
+		if(useVirtualDJ && useSpotify){
+			useVirtualDJ = false
+		}
+	};
+
+	const toggleUseVirtualDJ= () => {
+		useVirtualDJ = !useVirtualDJ;
+		console.log(useSpotify, useVirtualDJ)
+		if(useVirtualDJ && useSpotify){
+			useSpotify = false
+		}
+	};
 </script>
 
 <div id="main-controll-page">
-	{#if !$page.data.user}
+	{#if $page.data.user.role === uRoles.ALL}
 		<div id="not-logged-in">
 			<div id="view-selector">
 				<ul>
@@ -43,6 +65,7 @@
 					</li>
 				</ul>
 			</div>
+			<ControllBoard user={$page.data.user} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ}/>
 		</div>
 	{:else}
 		<ControllScreen {views} />

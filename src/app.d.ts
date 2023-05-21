@@ -27,8 +27,9 @@ export type UserCredentials = {
 
 enum uRoles {
     ADMIN = 'admin',
+    DJ = 'dj',
     USER = 'user',
-    DJ = 'dj'
+    ALL = 'all'
 }
 
 export {};

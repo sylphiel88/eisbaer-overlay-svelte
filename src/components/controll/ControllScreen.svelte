@@ -51,8 +51,6 @@
 		useOldVsNew = !useOldVsNew;
 		localStorage.setItem('useOldVsNew', `${useOldVsNew}`);
 	};
-
-	Components = options.map(file=>import(`./ViewOptions/${file}.svelte`))
 </script>
 
 <div id="controll-screen-wrapper">
@@ -73,7 +71,7 @@
 			</a>
 		{/if}
 	</div>
-	<ControllBoard Components={Components} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ}  useSpotify={useSpotify} useVirtualDJ={useVirtualDJ} useOldVsNew={useOldVsNew} toggleUseOldVsNew ={toggleUseOldVsNew}/>
+	<ControllBoard user={$page.data.user} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ}  useSpotify={useSpotify} useVirtualDJ={useVirtualDJ} useOldVsNew={useOldVsNew} toggleUseOldVsNew ={toggleUseOldVsNew}/>
 </div>
 
 <style lang="scss">
