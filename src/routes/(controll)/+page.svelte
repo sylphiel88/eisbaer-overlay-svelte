@@ -5,6 +5,7 @@
 	import ControllScreen from '../../components/controll/ControllScreen.svelte';
 	import { uRoles } from '../../types/types';
 	import ControllBoard from '../../components/controll/ControllBoard.svelte';
+	import OldVsNew from '../../components/controll/ViewOptions/OldVsNew.svelte';
 	let user: any = $page.data.user;
 	let views: View[] = [];
 	$: views = $page.data.views;
@@ -26,6 +27,8 @@
 
 	let useVirtualDJ:boolean = false
 
+	let useOldVsNew:boolean = false
+
 	const toggleUseSpotify = () => {
 		useSpotify = !useSpotify;
 		console.log(useSpotify, useVirtualDJ)
@@ -41,6 +44,10 @@
 			useSpotify = false
 		}
 	};
+
+const toggleUseOldVsNew = () => {
+	useOldVsNew = !useOldVsNew
+};
 </script>
 
 <div id="main-controll-page">
@@ -65,7 +72,7 @@
 					</li>
 				</ul>
 			</div>
-			<ControllBoard user={$page.data.user} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ}/>
+			<ControllBoard  user={$page.data.user} toggleUseSpotify={toggleUseSpotify} toggleUseVirtualDJ={toggleUseVirtualDJ} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ} toggleUseOldVsNew={toggleUseOldVsNew} useOldVsNew={useOldVsNew}/>
 		</div>
 	{:else}
 		<ControllScreen {views} />

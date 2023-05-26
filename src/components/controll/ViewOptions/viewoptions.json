@@ -14,5 +14,13 @@
     {
         "name": "VirtualDJ",
         "minRole": 2
+    },
+    {
+        "name":"OldVsNew",
+        "minRole": 2
+    },
+    {
+        "name":"DjPlanEditor",
+        "minRole": 0
     }
 ]
