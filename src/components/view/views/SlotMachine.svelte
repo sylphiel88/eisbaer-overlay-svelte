@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	let numberOfTurns: number = 60;
+	let numberOfTurns: number = 40;
 	let alreadyTakenYears: Number[] = [];
 	let year: number;
 
@@ -53,7 +53,11 @@
 		}, 5000);
 	}
 
-	const setYearAndChangeView = () => {};
+	const setYearAndChangeView = () => {
+		localStorage.setItem('currView', "2")
+		let event = new CustomEvent('setView', {detail: "2"})
+		document.dispatchEvent(event)
+	};
 
 	$: {
 		let thousand = Math.floor(year / 1000);

@@ -11,6 +11,8 @@
 	let useVirtualDJ:boolean
 	let useOldVsNew:boolean
 
+	let year:number
+
 	let user: string | undefined = '';
 	let views: View[] = [];
 
@@ -55,9 +57,13 @@
 				if (storedUseVirtualDJ !== null) {
 					useOldVsNew = storedUseOldVsNew === 'true';
 				}
+				let storedYear = localStorage.getItem('year')
+				if(storedYear !== null){
+					year = Number(storedYear)
+				}
 				});
 		}
 	});
 </script>
 
-<ViewScreen view={views[currView]} useOldVsNew={useOldVsNew} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ}/>
+<ViewScreen view={views[currView]} useOldVsNew={useOldVsNew} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ} year={year}/>

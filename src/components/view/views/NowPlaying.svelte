@@ -19,6 +19,8 @@
 
 	export let useOldVsNew: boolean;
 
+	export let year:number;
+
 	let interval: NodeJS.Timer | null = null;
 
 	$: console.log(useOldVsNew);
@@ -110,6 +112,9 @@
 </script>
 
 <div id="now-playing-screen">
+	{#if year}
+		<span style="position:absolute;">{year}</span>
+	{/if}
 	<div id="now-playing-eisbaer-logo">
 		<img src={`/eisbaerlogo${useOldVsNew ? '_alt' : ''}.png`} alt="" />
 		<!-- <span id="Title"

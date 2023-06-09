@@ -53,6 +53,8 @@ model Event {
   owName String?
   owCatchPhrase String?
   date DateTime
+  month Int
+  year Int
   Songs SongOnEvent[]
 }
 
