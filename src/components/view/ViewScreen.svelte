@@ -6,7 +6,9 @@
     export let useSpotify:boolean
     export let useOldVsNew:boolean
     export let useVirtualDJ:boolean
-    export let year:number
+    export let year:number|string
+    export let fontSize:number
+    export let useWaitList:boolean
     
     let Component: Promise<any>
 
@@ -44,5 +46,5 @@
 
 </script>
 {#await Component then {default: Component}}
-    <svelte:component this={Component} filename={option} useVirtualDj={useVirtualDJ} useSpotify={useSpotify} useOldVsNew={useOldVsNew} year={year}/>
+    <svelte:component this={Component} filename={option} useVirtualDj={useVirtualDJ} useSpotify={useSpotify} useOldVsNew={useOldVsNew} year={year} fontSize={fontSize} useWaitList={useWaitList}/>
 {/await}

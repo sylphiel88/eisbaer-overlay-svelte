@@ -6,22 +6,16 @@
 	import { uRoles } from '../../types/types';
 	import ControllBoard from '../../components/controll/ControllBoard.svelte';
 	import OldVsNew from '../../components/controll/ViewOptions/OldVsNew.svelte';
+	import { onMount } from 'svelte';
+	import socketIo from 'socket.io-client'
+	import SpotifyAccess from '../../classes/SpotifyAccess';
+
 	let user: any = $page.data.user;
 	let views: View[] = [];
 	$: views = $page.data.views;
 	let isNowPlaying: boolean = false;
 
-	$: {
-		if (browser) {
-			if (isNowPlaying) {
-				localStorage.setItem('currView', `1`);
-				localStorage.setItem('useSpotify', `true`);
-			} else {
-				localStorage.setItem('currView', `0`);
-				localStorage.setItem('useSpotify', `false`);
-			}
-		}
-	}
+	let io = SpotifyAccess.getInstance().io
 
 	let useSpotify:boolean = true
 

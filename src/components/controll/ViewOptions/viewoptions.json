@@ -22,5 +22,9 @@
     {
         "name":"DjPlanEditor",
         "minRole": 0
+    },
+    {
+        "name":"WaitList",
+        "minRole": 2
     }
 ]

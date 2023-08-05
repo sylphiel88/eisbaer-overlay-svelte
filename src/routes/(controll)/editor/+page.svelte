@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from "$app/stores";
 
-    let year = $page.data.year
-    let month = $page.data.month
+    import { page } from '$app/stores'
+
+    let { year, month } = $page.data
 
     const months = [
         "Januar",
@@ -19,14 +19,17 @@
         "Dezember"
     ]
 
-    let events:Event[] = []
+    let events:Event[]|undefined
 
     const getEvents = async() => {
-        events = await ((await fetch(`/api/v1/Event?year=${year}&month=${month}`)).json())
+        let result = await fetch(`/api/v1/Events?year=${year}&month=${month}`)
+        let jRes = await result.json()
+        console.log(jRes)
+        events = jRes
     }
 
     $:{
-        if(year!==undefined && month !== undefined){
+        if(year!==undefined && month !== undefined && events === undefined){
             getEvents()
         }
     }

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import FaChevronDown from 'svelte-icons/fa/FaChevronDown.svelte';
-	import FaChevronUp from 'svelte-icons/fa/FaChevronUp.svelte';
+	import FaChevronDown from "svelte-icons/fa/FaChevronDown.svelte";
+	import FaChevronUp from "svelte-icons/fa/FaChevronUp.svelte"
 	export let index: number;
 	export let title: string;
 	let open: boolean = false;

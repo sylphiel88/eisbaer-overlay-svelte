@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import SpotifyAccess from '../../../classes/SpotifyAccess';
-	import type { SpotifyTrack, VirtualDJ } from '../../../types/types';
+	import type { Item, SpotifyTrack, VirtualDJ } from '../../../types/types';
 	import VirtualDJAccess from '../../../classes/VirtualDjAccess';
-
+	import Marquee from 'svelte-fast-marquee';
 	let SpotifyInstance: SpotifyAccess = SpotifyAccess.getInstance();
 	let VirtualDJInstance: VirtualDJAccess = VirtualDJAccess.getInstance();
 	SpotifyInstance.useSpotify = false;
@@ -19,11 +19,18 @@
 
 	export let useOldVsNew: boolean;
 
-	export let year:number;
+	export let year: number | string;
+
+	export let useWaitList: boolean;
+
+	export let fontSize: number;
+	let currWaitlist: Item[];
 
 	let interval: NodeJS.Timer | null = null;
 
-	$: console.log(useOldVsNew);
+	let interval_WaitList: NodeJS.Timer | null = null;
+
+	$: console.log('hier', useWaitList);
 
 	const calcMinutesAndSeconds = (timeInMs: number) => {
 		let minutes = Math.floor(timeInMs / 1000 / 60);
@@ -38,13 +45,21 @@
 		return `${minutes}:${secondsString}`;
 	};
 
-	let timeToNextHalfHour:number = 0
+	let timeToNextHalfHour: number = 0;
+
+	let io = SpotifyAccess.getInstance().io;
 
 	onMount(async () => {
-		let storedUseSpotify = localStorage.getItem('useSpotify');
-		if (storedUseSpotify !== null) useSpotify = storedUseSpotify === 'true';
-		let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
-		if (storedUseVirtualDJ !== null) useVirtualDJ = storedUseVirtualDJ === 'true';
+		io?.on('setYear', (newYear: string) => {
+			year = newYear;
+		});
+
+		io?.on('setFontSize', (newSize: number) => {
+			fontSize = newSize;
+		});
+		io?.on('setWaitList', (waitlist: any) => {
+			currWaitlist = waitlist.queue.filter((item: any, index: number) => index <= 5);
+		});
 		document.addEventListener('settitle', (e: CustomEvent) => {
 			progress_ms = useSpotify
 				? SpotifyInstance.progress_ms
@@ -71,15 +86,28 @@
 		});
 	});
 
-	$: { if(useOldVsNew !== undefined){
-		if(interval){
-			clearInterval(interval)
+	$: {
+		if (useOldVsNew !== undefined) {
+			if (interval) {
+				clearInterval(interval);
+			}
+			interval = null;
+			interval = setInterval(() => {
+				timeToNextHalfHour = (getTimeToNextHalfHour() + 2) * 5;
+			}, 60000);
 		}
-		interval = null
-		interval = setInterval(()=>{
-			timeToNextHalfHour = (getTimeToNextHalfHour() + 2)* 5
-		},60000)
 	}
+
+	$: {
+		if (useWaitList) {
+			if (useSpotify && interval_WaitList === null) {
+				interval_WaitList = setInterval(() => {
+					io?.emit('getWaitList');
+				}, 10000);
+			}
+		} else {
+			interval_WaitList = null;
+		}
 	}
 
 	$: if (!useSpotify) {
@@ -93,10 +121,10 @@
 	onDestroy(() => {
 		SpotifyInstance.interval = null;
 		VirtualDJInstance.interval = null;
-		if(interval){
-			clearInterval(interval)
+		if (interval) {
+			clearInterval(interval);
 		}
-		interval = null
+		interval = null;
 	});
 
 	const getTimeToNextHalfHour = () => {
@@ -109,11 +137,19 @@
 		let minutes5 = Math.floor(Math.floor(Math.floor(difference / 1000) / 60) / 5);
 		return minutes5;
 	};
+
+	onDestroy(() => {
+		if (interval !== null) clearInterval(interval);
+		if (interval_WaitList !== null) clearInterval(interval_WaitList);
+	});
 </script>
 
 <div id="now-playing-screen">
 	{#if year}
-		<span style="position:absolute;">{year}</span>
+		<span
+			style={`position:absolute;${fontSize ? `font-size:${fontSize}pt;` : ''}`}
+			id="year-now-playing">{year}</span
+		>
 	{/if}
 	<div id="now-playing-eisbaer-logo">
 		<img src={`/eisbaerlogo${useOldVsNew ? '_alt' : ''}.png`} alt="" />
@@ -131,7 +167,23 @@
 		/>
 		<p>{currentSong?.item.album.name !== undefined ? currentSong?.item.album.name : ''}</p>
 	</div>
-	<div id="now-playing-marquee" />
+	<div id="now-playing-marquee">
+		{#if useWaitList}
+			<Marquee speed={25}>
+				<ul
+					style="list-style:none; margin: 0; padding: 0; display: flex; font-size: 2.5rem; gap: 5rem; margin-left: 5rem; margin-top: 0.5rem;"
+				>
+					{#if currWaitlist}
+						{#each currWaitlist as item, index}
+							<li>
+								{`${index + 1}. ${item.artists.map((artist) => artist.name).join(', ')} - ${item.name}`}
+							</li>
+						{/each}
+					{/if}
+				</ul>
+			</Marquee>
+		{/if}
+	</div>
 	<div id="now-playing-timeline">
 		<div id="now-playing-interpreten">
 			{currentSong?.item.artists !== undefined
@@ -160,6 +212,8 @@
 </div>
 
 <style lang="scss">
+	@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap');
+
 	#now-playing-screen {
 		// hier kompletter screen
 		display: grid;
@@ -282,5 +336,12 @@
 			width: 20rem;
 			left: 17%;
 		}
+	}
+
+	#year-now-playing {
+		font-family: 'Fredoka';
+		position: absolute;
+		top: 2rem;
+		left: 3rem;
 	}
 </style>

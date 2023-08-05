@@ -1,0 +1,41 @@
+version: "3.4"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Ircilv88!
+    ports:
+      - 5432:5432
+  client:
+    image: client
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+      - 24678:24678
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+  frontend:
+    build: ../eisbaerWishlist/frontend
+    image: "reactapp:1.0.0"
+    networks:
+      - sub-etha
+  backend:
+    build: ../eisbaerWishlist/backend
+    image: "expressapp:1.0.0"
+    networks:
+      - sub-etha
+  revproxy:
+    build: ../eisbaerWishlist/nginx
+    image: "reverseproxy:1.0.0"
+    networks:
+      - sub-etha
+    ports:
+      - "80:80"
+networks:
+  sub-etha:

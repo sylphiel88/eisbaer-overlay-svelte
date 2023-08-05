@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { AuthToken, SpotifyTrack } from '../types/types';
+import socketIo, {type Socket} from 'socket.io-client'
 
 export default class SpotifyAccess {
 	#access: AuthToken | null = null;
@@ -8,15 +9,25 @@ export default class SpotifyAccess {
 	#count: number = 0;
 	#progress_ms = 0;
 	#duration_ms = 0;
+	#io:Socket|null = null
+	private static readonly ENDPOINT = 'http://localhost:2001'
 
 	private static instance: SpotifyAccess | null = null;
 
 	private constructor() {
-		this.getAccessToken();
+		this.#io = socketIo(SpotifyAccess.ENDPOINT)
+		this.#io.on('setCurrentSong', (song:SpotifyTrack)=>{
+			this.currentSong = song
+		})
 	}
 
 	get currentSong() {
 		return this.#currentSong;
+	}
+
+	get authToken(){
+		console.log(this.#access)
+		return this.#access
 	}
 
 	set interval(interval: null) {
@@ -24,6 +35,10 @@ export default class SpotifyAccess {
 			clearInterval(this.#interval);
 			this.#interval = null;
 		}
+	}
+
+	get io(){
+		return this.#io
 	}
 
 	private set currentSong(gotSong: SpotifyTrack | undefined) {
@@ -62,20 +77,13 @@ export default class SpotifyAccess {
 		if (useSpotify) {
 			this.getNowPlaying();
 			this.#interval = setInterval(() => {
-				if (this.#access?.access_token) {
 					this.#count += 1;
 					if (this.#count % 4 === 0) {
 						this.getNowPlaying();
 					} else {
 						this.progress_ms += 1000;
 					}
-				}
-			}, 1000);
-		} else {
-			if(this.#interval !== null){
-				clearInterval(this.#interval)
-				this.#interval = null
-			}
+				}, 1000)
 			this.#count = 0;
 			this.currentSong = {
 				is_playing: true,
@@ -107,29 +115,11 @@ export default class SpotifyAccess {
 	}
 
 	private getNowPlaying() {
-		if (this.#access?.access_token) {
-			fetch('http://localhost:3000/api/spotify/getNowPlaying', {
-				method: 'POST',
-				body: JSON.stringify({
-					access_token: this.#access?.access_token
-				})
-			}).then((res) =>
-				res.json().then((jRes) => {
-					this.currentSong = jRes;
-				})
-			);
-		}
-	}
-
-	private getAccessToken() {
-		axios.get('http://localhost:3000/api/spotify/getAuthToken').then((res: { data: AuthToken }) => {
-			if (res.data.expires_in) {
-				setTimeout(() => this.getAccessToken(), res.data.expires_in * 990);
-			} else {
-				setTimeout(() => this.getAccessToken(), 120000);
-			}
-			this.#access = res.data;
-		});
+		fetch('http://localhost:3000/api/spotify/getUser').then(res=>res.json().then(async jRes=>{
+			console.log('user', jRes)
+			this.#io?.emit('setSpotify', jRes, false)
+			this.#io?.emit('getNowPlaying')
+		}))
 	}
 
 	public static getInstance() {

@@ -5,7 +5,7 @@ import CurrViewStore from "../../../../../src/Store";
 export const GET:RequestHandler = async() => {
 const CLIENT_ID = process.env.CLIENT_ID;
   const SCOPE = "user-read-currently-playing";
-  const REDIRECT_URI = "http://localhost:3000/api/spotify/refreshTokenCallback";
+  const REDIRECT_URI = "http://localhost:2001/spotify/refreshTokenCallback";
   throw redirect(302,
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({

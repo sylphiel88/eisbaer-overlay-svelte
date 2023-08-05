@@ -1,7 +1,6 @@
 import { redirect } from "@sveltejs/kit"
 import { uRoles } from "../../../types/types"
 import type { PageServerLoad } from "./$types"
-import EventService from "../../../services/EventService.class"
 
 export const load: PageServerLoad = async ({locals}) => {
     if (!locals.user || locals.user.role !== uRoles.ADMIN) {

@@ -1,11 +1,20 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import SpotifyAccess from "../../../classes/SpotifyAccess";
 
     let classes = ["intro intro-start", "top-curtain", "side-curtains","curtain-left","curtain-right"]
     let curtainsOpen:boolean = false
     let introTexts = [false, false, false, false, false, false]
 
+    const io = SpotifyAccess.getInstance().io
+
+   let useOldVsNew:boolean = false
+
     onMount(()=>{
+        io?.emit('getOldVsNew')
+        io?.on('setOldVsNew', (set: boolean) => {
+            useOldVsNew = set
+        })
         let introSound = new Audio("http://localhost:3000/jan_intro.mp3")
         setTimeout(()=>{introSound.play()}, 2000)
         setTimeout(()=>{
@@ -73,13 +82,13 @@
     <div class="content-intro">
         {#if introTexts[0]}
             <!-- svelte-ignore a11y-missing-attribute -->
-            <img src="http://localhost:3000/eisbaerlogo.png"/>
+            <img src={`http://localhost:3000/eisbaerlogo${useOldVsNew?'_alt':''}.png`}/>
         {/if}
         {#if introTexts[1]}
             <span>presents</span>
         {/if}
         {#if introTexts[2]}
-            <span class="mixed-metal">Mixed Metal</span>
+            <span class="mixed-metal">Mixed{useOldVsNew?'\u00a0Old':''} Metal</span>
         {/if}
         {#if introTexts[3]}
             <span>mit DJ Jan</span>
