@@ -1,69 +1,66 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
-	import type { View } from '@prisma/client';
 	import { onMount } from 'svelte';
 	import ViewScreen from '../../../components/view/ViewScreen.svelte';
+	import SpotifyAccess from '../../../classes/SpotifyAccess';
 
 	let currView: number = 0;
 
-	let useSpotify:boolean
-	let useVirtualDJ:boolean
-	let useOldVsNew:boolean
+	let useSpotify: boolean;
+	let useVirtualDJ: boolean;
+	let useOldVsNew: boolean;
 
-	let year:number
+	let year: number | string;
 
-	let user: string | undefined = '';
-	let views: View[] = [];
+	let fontSize: number;
 
-	$: views = $page.data.views;
-	$: user = $page.data.user;
+	let useWaitList:boolean;
+
+	let io = SpotifyAccess.getInstance().io;
 
 	onMount(() => {
 		if (browser) {
-			let storedCurrView = localStorage.getItem('currView');
-			if (user && storedCurrView) currView = Number(storedCurrView);
-			window.addEventListener('storage', () => {
-				let storedCurrView = localStorage.getItem('currView');
-				if (user) {
-					currView =
-						storedCurrView !== undefined &&
-						storedCurrView !== null &&
-						storedCurrView !== '' &&
-						typeof Number(storedCurrView) === 'number'
-							? Number(storedCurrView)
-							: 0;
-				} else {
-					currView = 0;
-				}
-				if (!user && !(storedCurrView === '1' || storedCurrView === '0')) {
-					localStorage.setItem('currView', '0');
-				} else if(!user){
-					if(storedCurrView === '1' || storedCurrView === '0'){
-						currView = Number(storedCurrView)
-					} else {
-						currView = 0
-					}
-				}
-				let storedUseSpotify = localStorage.getItem('useSpotify');
-				if (storedUseSpotify !== null) {
-					useSpotify = storedUseSpotify === 'true';
-				}
-				let storedUseVirtualDJ = localStorage.getItem('useVirtualDJ');
-				if (storedUseVirtualDJ !== null) {
-					useVirtualDJ = storedUseVirtualDJ === 'true';
-				} 
-				let storedUseOldVsNew = localStorage.getItem('useOldVsNew');
-				if (storedUseVirtualDJ !== null) {
-					useOldVsNew = storedUseOldVsNew === 'true';
-				}
-				let storedYear = localStorage.getItem('year')
-				if(storedYear !== null){
-					year = Number(storedYear)
-				}
-				});
+			io?.emit('joinBeamerRoom')
+			io?.emit('getCurrView');
+			io?.on('setCurrView', (view: number) => {
+				currView = view;
+			});
+			io?.emit('getUseSpotify');
+			io?.on('setUseSpotify', (set: boolean) => {
+				useSpotify = set;
+			});
+			io?.emit('getUseVirtualDJ');
+			io?.on('setVirtualDJ', (set: boolean) => {
+				useVirtualDJ = set;
+			});
+			io?.emit('getOldVsNew')
+			io?.on('setOldVsNew', (set: boolean) => {
+				useOldVsNew = set
+			})
+			io?.emit('getYear')
+			io?.on('setYear', (year: string) => {
+				year = year
+			})
+			
+			io?.emit('getFontSize')
+			io?.on('setFontSize', (newFontSize: number) => {
+				fontSize = newFontSize
+			})
+			io?.emit('getWaitlistStatus')
+			io?.on('setWaitlistStatus', (set: boolean) => {
+				useWaitList = set
+			})
 		}
 	});
 </script>
 
-<ViewScreen view={views[currView]} useOldVsNew={useOldVsNew} useSpotify={useSpotify} useVirtualDJ={useVirtualDJ} year={year}/>
+<ViewScreen
+	view={$page.data.views[currView]}
+	{useOldVsNew}
+	{useSpotify}
+	{useVirtualDJ}
+	{year}
+	{fontSize}
+	{useWaitList}
+/>
